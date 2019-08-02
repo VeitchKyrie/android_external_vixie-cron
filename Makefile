@@ -56,17 +56,18 @@ DESTSBIN	=	$(DESTROOT)/sbin
 DESTBIN		=	$(DESTROOT)/bin
 DESTMAN		=	$(DESTROOT)/share/man
 #<<need bitstring.h>>
-INCLUDE		=	-I.
+INCLUDE		=	-I. -I../../../FAW-VW-CRS3.0-MQB-System-Sdk/sysroots/armv7ahf-neon-linux-gnueabi/usr/include 
 #INCLUDE	=
 #<<need getopt()>>
-LIBS		=
+LIBS		= 
 #<<optimize or debug?>>
 #CDEBUG		=	-O
 CDEBUG		=	-g
 #<<lint flags of choice?>>
 LINTFLAGS	=	-hbxa $(INCLUDE) $(DEBUGGING)
 #<<want to use a nonstandard CC?>>
-CC		=	./agcc -mabi=aapcs-linux -Wall -Wno-unused -Wno-comment
+#CC		=	./agcc -mabi=aapcs-linux -Wall -Wno-unused -Wno-comment
+CC          = arm-linux-gnueabihf-gcc
 #<<manifest defines>>
 DEFS		=
 #(SGI IRIX systems need this)
@@ -75,7 +76,7 @@ DEFS		=
 #INSTALL = installbsd
 INSTALL = install
 #<<any special load flags>>
-LDFLAGS		=
+LDFLAGS		= -L../../../FAW-VW-CRS3.0-MQB-System-Sdk/sysroots/armv7ahf-neon-linux-gnueabi/usr/lib 
 #################################### end configurable stuff
 
 SHELL		=	/bin/sh
@@ -103,8 +104,11 @@ lint		:
 			lint $(LINTFLAGS) $(LINT_CRONTAB) $(LIBS) \
 			|grep -v "constant argument to NOT" 2>&1
 
+
 cron		:	$(CRON_OBJ)
 			$(CC) $(LDFLAGS) -o cron $(CRON_OBJ) $(LIBS)
+
+#vpath %.o /work/sdk/FAW-VW-CRS3.0-37W-Soc/FAW-VW-CRS3.0-37W-System-Sdk/sysroots/armv7ahf-neon-linux-gnueabi/usr/lib
 
 crontab		:	$(CRONTAB_OBJ)
 			$(CC) $(LDFLAGS) -o crontab $(CRONTAB_OBJ) $(LIBS)
@@ -125,7 +129,10 @@ distclean	:	clean
 clean		:
 			rm -f *.o
 			rm -f cron crontab
-
+            $(shell ln -s ../../../../FAW-VW-CRS3.0-37W-Soc/FAW-VW-CRS3.0-37W-System-Sdk/sysroots/armv7ahf-neon-linux-gnueabi/usr/lib/crtn.o)
+            $(shell ln -s ../../../../FAW-VW-CRS3.0-37W-Soc/FAW-VW-CRS3.0-37W-System-Sdk/sysroots/armv7ahf-neon-linux-gnueabi/usr/lib/crti.o)
+            $(shell ln -s ../../../../FAW-VW-CRS3.0-37W-Soc/FAW-VW-CRS3.0-37W-System-Sdk/sysroots/armv7ahf-neon-linux-gnueabi/usr/lib/crt1.o )
+    
 tags		:;	ctags ${SOURCES}
 
 kit		:	$(SHAR_SOURCE)
